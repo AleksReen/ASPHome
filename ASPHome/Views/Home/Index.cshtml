@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ASPHome.Models.User>
+@using ASPHome.Models
+
+@{
+    ViewBag.Title = "Index";
+    var grid = new WebGrid(ViewBag.List as List<User>);
+    var optionsAjax = new AjaxOptions
+    {
+        UpdateTargetId = "data",
+        LoadingElementId = "loadingIndicator",
+        OnBegin = "onUpdate",
+        OnSuccess = "onSuccess"
+    };
+}
+
+<h2>Home</h2>
+
+<input class="btn btn-primary" type="button" value="Create User"
+       onclick="location.href='@Url.RouteUrl(new { controller = "Form", action = "CreateForm"})'" />
+<hr />
+<div class="container">
+    <div class="col-md-3">
+        <h3 class="italic">
+            <span class="glyphicon glyphicon-list"></span>
+            User List
+        </h3>
+
+        @foreach (var item in ViewBag.List)
+        {
+            if (ViewBag.selectedUser == null)
+            {
+                ViewBag.selectedUser = item;
+            }
+        }
+
+        @grid.GetHtml(
+        tableStyle: "table",
+        columns: grid.Columns(
+            grid.Column("Name", header: "User Name",
+                        format:
+                        @<text>
+                            <span class="glyphicon glyphicon-user"></span>
+                            @Ajax.ActionLink($"{item.Name} {item.MiddleName}", "GetAjax", new { id = item.Id }, optionsAjax, htmlAttributes: new { @class = "index-li-a" })
+                        </text>)
+            )
+        )
+    </div>
+    <div class="col-md-9">
+        <h3 style="margin-top:25px;">User Details <span id="loadingIndicator" style="display:none;"> - Loading...</span></h3>
+        <hr />
+
+        <div id="data">
+            @Html.Action("GetAjax", (ASPHome.Models.User)ViewBag.selectedUser)
+        </div>
+    </div>
+</div>
