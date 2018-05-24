@@ -14,7 +14,7 @@ function onSuccess() {
         url: "/api/HomeApi",
         type: "GET",
         success: function (data) {
-            $("#date").text(data + " - Date from WevApi");
+            $("#date").text(data + " web api");
         },
         error: function (error) {
             console.warn(error.responseJSON.Message);

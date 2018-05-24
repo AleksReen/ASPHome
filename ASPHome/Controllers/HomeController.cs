@@ -14,7 +14,7 @@ namespace ASPHome.Controllers
         // GET: Home
         public ActionResult Index(int? id, int? page)
         {
-            ViewBag.selectedUser = id == null ? null : db.Users.Find(id);
+            ViewBag.selectedUser = id == null ? null : db.GetUser(id);
             List<User> userList = db.Users.Select(user => user).OrderBy(user => user.Name).ToList<User>();
 
             ViewBag.List = userList;
