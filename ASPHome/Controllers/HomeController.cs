@@ -12,13 +12,23 @@ namespace ASPHome.Controllers
     {
         private UserDataBase db = new UserDataBase();
         // GET: Home
-        public ActionResult Index(int? id, int? page)
+        public ActionResult Index(int? id = 1, int page = 1)
         {
-            ViewBag.selectedUser = id == null ? null : db.GetUser(id);
-            List<User> userList = db.Users.Select(user => user).OrderBy(user => user.Name).ToList<User>();
+            var model = new UsersViewModel()
+            {
+                userList = db.Users
+                    .Select(user => user)
+                    .OrderBy(user => user.Name),
 
-            ViewBag.List = userList;
-            return View();
+                selectedUser = page == 1 ? db.GetUser(id) :
+                                           db.Users
+                                            .OrderBy(user => user.Name)
+                                            .Skip((page - 1) * 10)
+                                            .Take(1)
+                                            .FirstOrDefault()
+            };
+            
+            return View(model);
             
         }
 
